@@ -1,0 +1,76 @@
+~/workspace$ streamlit run app.py --server.port 5000 --server.address 0.0.0.0
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://0.0.0.0:5000
+
+────────────────────────── Traceback (most recent call last) ───────────────────────────
+  /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/streamlit/runtime/sc  
+  riptrunner/exec_code.py:121 in exec_func_with_error_handling                          
+                                                                                        
+  /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/streamlit/runtime/sc  
+  riptrunner/script_runner.py:640 in code_to_exec                                       
+                                                                                        
+  /home/runner/workspace/app.py:8 in <module>                                           
+                                                                                        
+      5 import numpy as np                                                              
+      6 import base64                                                                   
+      7 import io                                                                       
+  ❱   8 from financial_analysis import (                                                
+      9 │   load_data,                                                                  
+     10 │   analyze_data,                                                               
+     11 │   generate_response,                                                          
+                                                                                        
+  /home/runner/workspace/financial_analysis.py:5 in <module>                            
+                                                                                        
+      2 import plotly.express as px                                                     
+      3 import re                                                                       
+      4 import numpy as np                                                              
+  ❱   5 import yfinance as yf                                                           
+      6                                                                                 
+      7 # Import custom modules                                                         
+      8 from nlp_processor import analyze_query                                         
+                                                                                        
+  /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/yfinance/__init__.py  
+  :23 in <module>                                                                       
+                                                                                        
+    20 #                                                                                
+    21                                                                                  
+    22 from . import version                                                            
+  ❱ 23 from .ticker import Ticker                                                       
+    24 from .tickers import Tickers                                                     
+    25 from .multi import download                                                      
+    26 from .utils import enable_debug_mode                                             
+                                                                                        
+  /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/yfinance/ticker.py:2  
+  8 in <module>                                                                         
+                                                                                        
+     25                                                                                 
+     26 import pandas as _pd                                                            
+     27                                                                                 
+  ❱  28 from .base import TickerBase                                                    
+     29 from .const import _BASE_URL_                                                   
+     30                                                                                 
+     31                                                                                 
+                                                                                        
+  /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/yfinance/base.py:40   
+  in <module>                                                                           
+                                                                                        
+     37 from .scrapers.fundamentals import Fundamentals                                 
+     38 from .scrapers.holders import Holders                                           
+     39 from .scrapers.quote import Quote, FastInfo                                     
+  ❱  40 from .scrapers.history import PriceHistory                                      
+     41                                                                                 
+     42 from .const import _BASE_URL_, _ROOT_URL_                                       
+     43                                                                                 
+────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────────────
+   /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/yfinance/scrapers/h  
+  istory.py:1207                                                                        
+          logger.debug(f'price-repair-split: Splits: {str(df['Stock Splits'][split_f].  
+                                                              ▲                         
+────────────────────────────────────────────────────────────────────────────────────────
+SyntaxError: f-string: unmatched '['
