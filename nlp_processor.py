@@ -3,6 +3,9 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+# Print version information
+print("NLP Processor module loaded")
+
 # Financial domain terms to recognize in queries
 FINANCIAL_TERMS = {
     'revenue': ['revenue', 'sales', 'income', 'earnings', 'money', 'earn', 'top line', 'turnover'],

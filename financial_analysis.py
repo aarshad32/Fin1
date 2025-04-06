@@ -26,10 +26,28 @@ def load_data(uploaded_file=None):
         else:
             # Try to load from a local file
             try:
-                df = pd.read_csv('./attached_assets/Financial_data.csv', thousands=',')
-            except:
-                df = pd.read_csv('./Financial_data.csv', thousands=',')
+                # Check multiple possible locations for the file
+                possible_paths = [
+                    './attached_assets/Financial_data.csv',
+                    './Financial_data.csv',
+                    './sample_financial_data.csv'
+                ]
+                
+                for path in possible_paths:
+                    try:
+                        df = pd.read_csv(path, thousands=',')
+                        print(f"Successfully loaded data from {path}")
+                        break
+                    except:
+                        continue
+                else:  # This runs if the loop completes without breaking
+                    raise FileNotFoundError("Could not find financial data file in any expected location")
+            except Exception as e:
+                print(f"Error loading financial data: {str(e)}")
+                # Fall back to sample data
+                raise  # Re-raise to trigger the sample data creation
     except Exception as e:
+        print(f"Using sample data due to: {str(e)}")
         # If file not found or error, create a DataFrame with the provided sample data
         data = {
             'Company': ['Microsoft', 'Microsoft', 'Microsoft', 'Tesla', 'Tesla', 'Tesla', 'Apple', 'Apple', 'Apple'],
@@ -41,6 +59,7 @@ def load_data(uploaded_file=None):
             'Cash Flow from Operating Activities (in millions)': [118548, 87582, 89035, 14923, 13256, 14724, 29943, 30737, 35929]
         }
         df = pd.DataFrame(data)
+        print("Created sample financial data")
     
     return df
 
