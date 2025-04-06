@@ -2,7 +2,14 @@ import pandas as pd
 import plotly.express as px
 import re
 import numpy as np
-import yfinance as yf
+
+# Try to import yfinance safely
+try:
+    import yfinance as yf
+    YFINANCE_AVAILABLE = True
+except Exception as e:
+    print(f"Warning: yfinance could not be imported: {str(e)}")
+    YFINANCE_AVAILABLE = False
 
 # Import custom modules
 from nlp_processor import analyze_query
@@ -65,6 +72,12 @@ def load_data(uploaded_file=None):
 
 def get_yfinance_data(tickers, period="2y"):
     """Get financial data from yfinance API"""
+    # Check if yfinance is available
+    if not YFINANCE_AVAILABLE:
+        print("yfinance module is not available, using sample data instead")
+        # Return None to trigger using sample data
+        return None
+        
     try:
         # Dictionary to store financial data
         financial_data = {
@@ -80,45 +93,72 @@ def get_yfinance_data(tickers, period="2y"):
         for ticker in tickers:
             stock = yf.Ticker(ticker)
             
-            # Get financials
-            income_stmt = stock.income_stmt
-            balance_sheet = stock.balance_sheet
-            cash_flow = stock.cashflow
+            # Safely get financials
+            try:
+                income_stmt = stock.income_stmt
+                balance_sheet = stock.balance_sheet
+                cash_flow = stock.cashflow
+            except Exception as e:
+                print(f"Error getting financial data for {ticker}: {str(e)}")
+                continue
             
             if income_stmt is None or income_stmt.empty:
                 continue
                 
             # Process each year in the data
             for year in income_stmt.columns:
-                fiscal_year = year.year
-                
-                # Total Revenue (may be listed under different names)
-                revenue = income_stmt.loc.get('Total Revenue', {}).get(year, None)
-                if revenue is None:
-                    revenue = income_stmt.loc.get('Revenue', {}).get(year, None)
+                try:
+                    fiscal_year = year.year
                     
-                # Net Income
-                net_income = income_stmt.loc.get('Net Income', {}).get(year, None)
-                
-                # Skip if essential data is missing
-                if revenue is None or net_income is None:
+                    # Total Revenue (may be listed under different names)
+                    revenue = None
+                    try:
+                        revenue = income_stmt.loc.get('Total Revenue', {}).get(year, None)
+                        if revenue is None:
+                            revenue = income_stmt.loc.get('Revenue', {}).get(year, None)
+                    except:
+                        pass
+                        
+                    # Net Income
+                    net_income = None
+                    try:
+                        net_income = income_stmt.loc.get('Net Income', {}).get(year, None)
+                    except:
+                        pass
+                    
+                    # Skip if essential data is missing
+                    if revenue is None or net_income is None:
+                        continue
+                        
+                    # Total Assets and Liabilities (if available)
+                    total_assets = None
+                    total_liabilities = None
+                    try:
+                        if balance_sheet is not None:
+                            total_assets = balance_sheet.loc.get('Total Assets', {}).get(year, None)
+                            total_liabilities = balance_sheet.loc.get('Total Liabilities', {}).get(year, None)
+                    except:
+                        pass
+                    
+                    # Cash Flow from Operations (if available)
+                    operating_cash_flow = None
+                    try:
+                        if cash_flow is not None:
+                            operating_cash_flow = cash_flow.loc.get('Operating Cash Flow', {}).get(year, None)
+                    except:
+                        pass
+                    
+                    # Append data to lists
+                    financial_data['Company'].append(ticker)
+                    financial_data['Fiscal Year'].append(fiscal_year)
+                    financial_data['Total Revenue (in millions)'].append(float(revenue) / 1e6 if revenue is not None else None)
+                    financial_data['Net Income (in millions)'].append(float(net_income) / 1e6 if net_income is not None else None)
+                    financial_data['Total Assets (in millions)'].append(float(total_assets) / 1e6 if total_assets is not None else None)
+                    financial_data['Total Liabilities (in millions)'].append(float(total_liabilities) / 1e6 if total_liabilities is not None else None)
+                    financial_data['Cash Flow from Operating Activities (in millions)'].append(float(operating_cash_flow) / 1e6 if operating_cash_flow is not None else None)
+                except Exception as e:
+                    print(f"Error processing year data for {ticker}: {str(e)}")
                     continue
-                    
-                # Total Assets and Liabilities (if available)
-                total_assets = balance_sheet.loc.get('Total Assets', {}).get(year, None) if balance_sheet is not None else None
-                total_liabilities = balance_sheet.loc.get('Total Liabilities', {}).get(year, None) if balance_sheet is not None else None
-                
-                # Cash Flow from Operations (if available)
-                operating_cash_flow = cash_flow.loc.get('Operating Cash Flow', {}).get(year, None) if cash_flow is not None else None
-                
-                # Append data to lists
-                financial_data['Company'].append(ticker)
-                financial_data['Fiscal Year'].append(fiscal_year)
-                financial_data['Total Revenue (in millions)'].append(float(revenue) / 1e6 if revenue is not None else None)
-                financial_data['Net Income (in millions)'].append(float(net_income) / 1e6 if net_income is not None else None)
-                financial_data['Total Assets (in millions)'].append(float(total_assets) / 1e6 if total_assets is not None else None)
-                financial_data['Total Liabilities (in millions)'].append(float(total_liabilities) / 1e6 if total_liabilities is not None else None)
-                financial_data['Cash Flow from Operating Activities (in millions)'].append(float(operating_cash_flow) / 1e6 if operating_cash_flow is not None else None)
                 
         # Create DataFrame
         yf_df = pd.DataFrame(financial_data)
@@ -129,6 +169,7 @@ def get_yfinance_data(tickers, period="2y"):
         if not yf_df.empty:
             return yf_df
         else:
+            print("No valid financial data retrieved from yfinance")
             return None
             
     except Exception as e:

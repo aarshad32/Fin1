@@ -443,41 +443,55 @@ elif page == "Real-time Data":
     st.title("Real-time Financial Data")
     st.write("Get the latest financial data from Yahoo Finance")
     
-    # Input for tickers
-    ticker_input = st.text_input(
-        "Enter stock tickers (comma-separated):",
-        "MSFT,AAPL,TSLA,GOOGL,AMZN"
-    )
+    # Check if yfinance is available by importing from financial_analysis
+    from financial_analysis import YFINANCE_AVAILABLE
     
-    # Parse tickers
-    tickers = [ticker.strip() for ticker in ticker_input.split(",") if ticker.strip()]
-    
-    if st.button("Fetch Data"):
-        if tickers:
-            with st.spinner("Fetching financial data from Yahoo Finance..."):
-                # Get yfinance data
-                yf_data = get_yfinance_data(tickers)
+    if not YFINANCE_AVAILABLE:
+        st.warning("The yfinance library is not available in this environment. Real-time data retrieval is disabled.")
+        st.info("You can still use the sample data or upload your own data from the 'Data Upload' tab.")
+    else:
+        # Input for tickers
+        ticker_input = st.text_input(
+            "Enter stock tickers (comma-separated):",
+            "MSFT,AAPL,TSLA,GOOGL,AMZN"
+        )
+        
+        # Parse tickers
+        tickers = [ticker.strip() for ticker in ticker_input.split(",") if ticker.strip()]
+        
+        if st.button("Fetch Data"):
+            if tickers:
+                with st.spinner("Fetching financial data from Yahoo Finance..."):
+                    # Get yfinance data
+                    yf_data = get_yfinance_data(tickers)
+                    
+                    if yf_data is not None and not yf_data.empty:
+                        st.success(f"Successfully retrieved data for {yf_data['Company'].nunique()} companies.")
+                        
+                        # Store the dataframe and analyze it
+                        st.session_state.df = yf_data
+                        st.session_state.analysis_data = analyze_data(yf_data)
+                        
+                        # Show a preview of the data
+                        st.subheader("Data Preview")
+                        st.dataframe(yf_data)
+                        
+                        # Show a visualization
+                        st.subheader("Revenue Comparison")
+                        fig = create_revenue_chart(yf_data)
+                        st.plotly_chart(fig, use_container_width=True)
+                    else:
+                        st.error("Could not retrieve financial data. Please check the ticker symbols or try again later.")
+                        st.info("If the data retrieval fails, you can still use the uploaded data from the 'Data Upload' tab.")
+            else:
+                st.warning("Please enter at least one ticker symbol.")
                 
-                if yf_data is not None and not yf_data.empty:
-                    st.success(f"Successfully retrieved data for {yf_data['Company'].nunique()} companies.")
-                    
-                    # Store the dataframe and analyze it
-                    st.session_state.df = yf_data
-                    st.session_state.analysis_data = analyze_data(yf_data)
-                    
-                    # Show a preview of the data
-                    st.subheader("Data Preview")
-                    st.dataframe(yf_data)
-                    
-                    # Show a visualization
-                    st.subheader("Revenue Comparison")
-                    fig = create_revenue_chart(yf_data)
-                    st.plotly_chart(fig, use_container_width=True)
-                else:
-                    st.error("Could not retrieve financial data. Please check the ticker symbols or try again later.")
-                    st.info("If the data retrieval fails, you can still use the uploaded data from the 'Data Upload' tab.")
-        else:
-            st.warning("Please enter at least one ticker symbol.")
+    # Show a note about using sample data
+    st.markdown("---")
+    st.markdown("""
+    **Note:** If you don't have access to real-time data or the Yahoo Finance API, 
+    you can use the sample data provided in the 'Data Upload' tab.
+    """)
 
 # Add footer
 st.markdown("---")

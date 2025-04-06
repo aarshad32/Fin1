@@ -1,0 +1,227 @@
+
+[     UTC     ] Logs for vappk8sxitf9zdwjdubssxz.streamlit.app/
+────────────────────────────────────────────────────────────────────────────────────────
+[20:38:34] 🖥 Provisioning machine...
+[20:38:34] 🎛 Preparing system...
+[20:38:34] ⛓ Spinning up manager process...
+[20:38:36] 🚀 Starting up repository: 'fin1', branch: 'main', main module: 'api/index.py'
+[20:38:36] 🐙 Cloning repository...
+[20:38:37] 🐙 Cloning into '/mount/src/fin1'...
+
+[20:38:37] 🐙 Cloned repository!
+[20:38:37] 🐙 Pulling code changes from Github...
+[20:38:37] 📦 Processing dependencies...
+Prepared 89 packages in 8.21s
+Installed 89 packages in 875ms
+ + altair==5.5.0
+ + annotated-types==0.7.0
+ + attrs==25.3.0
+ + beautifulsoup4==4.13.3
+ + blinker==1.9.0
+ + blis==1.3.0
+ + cachetools==5.5.2
+ + catalogue==2.0.10
+ + certifi==2025.1.31
+ [2025-04-06 20:38:47.157968] + charset-normalizer==3.4.1
+ + click==8.1.8
+ + cloudpathlib==0.21.0
+ + confection==0.1.5
+ + contourpy==1.3.1
+ + cycler==0.12.1
+ + cymem==2.0.11
+ + fonttools==4.57.0
+ +[2025-04-06 20:38:47.158192]  frozendict==2.4.6
+ + gitdb==4.0.12
+ + gitpython==3.1.44
+ + idna==3.10
+ + jinja2==3.1.6
+ + joblib==1.4.2
+ + jsonschema==[2025-04-06 20:38:47.158431] 4.23.0
+ + jsonschema-specifications==2024.10.1
+ + kiwisolver==1.4.8
+ + langcodes==3.5.0
+ + language-data==1.3.0
+ + marisa-trie==1.2.1
+ + [2025-04-06 20:38:47.158665] markdown-it-py==3.0.0
+ + markupsafe==3.0.2
+ + matplotlib==3.10.1
+ + mdurl==0.1.2
+ + multitasking==0.0.11
+ [2025-04-06 20:38:47.158876] + murmurhash==1.0.12
+ + narwhals==1.33.0
+ + nltk==3.9.1
+ + numpy==2.2.4
+ + packaging==24.2
+ [2025-04-06 20:38:47.159116] + pandas==2.2.3
+ + peewee==3.17.9
+ + pillow==11.1.0
+ + platformdirs==4.3.7
+ + plotly==6.0.1[2025-04-06 20:38:47.159325] 
+ + preshed==3.0.9
+ + protobuf==5.29.4
+ + pyarrow==19.0.1
+ + pydantic==2.11.2
+ + pydantic-core==[2025-04-06 20:38:47.159454] 2.33.1
+ + pydeck==0.9.1
+ + pygments==2.19.1
+ + pyparsing==3.2.3
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2[2025-04-06 20:38:47.159580] 
+ + referencing==0.36.2
+ + regex==2024.11.6
+ + requests==2.32.3
+ + rich==14.0.0
+ + rpds-py==0.24.0
+ + scikit-learn==1.6.1[2025-04-06 20:38:47.159705] 
+ + scipy==1.15.2
+ + setuptools==78.1.0
+ + shellingham==1.5.4
+ + six==1.17.0
+ + smart-open==7.1.0[2025-04-06 20:38:47.159814] 
+ + smmap==5.0.2
+ + soupsieve==2.6
+ + spacy==3.8.5
+ + spacy-legacy==3.0.12
+ + spacy-loggers==1.0.5
+ [2025-04-06 20:38:47.159980] + srsly==2.5.1
+ + streamlit==1.44.1
+ + tenacity==9.1.2
+ + thinc==8.3.6
+ + threadpoolctl==3.6.0
+ + toml==0.10.2
+ + tornado==6.4.2
+ + tqdm==4.67.1
+ + typer==0.15.2
+ + typing-extensions==4.13.1
+ + typing-inspection==0.4.0
+ + [2025-04-06 20:38:47.160257] tzdata==2025.2
+ + urllib3==2.3.0
+ + wasabi==1.1.3
+ + watchdog==6.0.0
+ + weasel==0.4.1
+ +[2025-04-06 20:38:47.160437]  wordcloud==1.9.4
+ + wrapt==1.17.2
+ + yfinance==0.2.55
+[20:38:47] 🐍 Python dependencies were installed from /mount/src/fin1/uv.lock using uv-sync.
+[20:38:47] 📦 WARN: More than one requirements file detected in the repository. Available options: uv-sync /mount/src/fin1/uv.lock, uv /mount/src/fin1/requirements.txt, poetry /mount/src/fin1/pyproject.toml. Used: uv-sync with /mount/src/fin1/uv.lock
+Check if streamlit is installed
+Streamlit is already installed
+[20:38:49] 📦 Processed dependencies!
+
+
+
+[20:38:53] ❗️ The service has encountered an error while checking the health of the Streamlit app: Get "http://localhost:8501/healthz": dial tcp 127.0.0.1:8501: connect: connection refused
+[20:42:42] 🐙 Pulling code changes from Github...
+[20:42:43] 📦 Processing dependencies...
+[20:42:43] 📦 Processed dependencies!
+[20:42:46] 🔄 Updated app!
+[20:43:10] 🖥 Provisioning machine...
+[20:43:15] 🎛 Preparing system...
+[20:43:15] 🚀 Starting up repository: 'fin1', branch: 'main', main module: 'api/index.py'
+[20:43:15] 🐙 Cloning repository...
+[20:43:15] 🐙 Cloning into '/mount/src/fin1'...
+
+[20:43:15] 🐙 Cloned repository!
+[20:43:15] 🐙 Pulling code changes from Github...
+[20:43:16] 📦 Processing dependencies...
+[20:43:16] ⛓ Spinning up manager process...
+Prepared 89 packages in 7.87s
+Installed 89 packages in 730ms
+ + altair==5.5.0
+ + annotated-types==0.7.0
+ + attrs==25.3.0
+ + beautifulsoup4==4.13.3
+ + blinker==1.9.0
+ + blis==1.3.0
+ + cachetools==5.5.2
+ + catalogue==2.0.10
+ + certifi==2025.1.31
+ + charset-normalizer==3.4.1
+ + click==8.1.8
+ + cloudpathlib==0.21.0
+ + confection==0.1.5
+ + contourpy==1.3.1
+ + cycler==0.12.1[2025-04-06 20:43:25.323742] 
+ + cymem==2.0.11
+ + fonttools==4.57.0
+ + frozendict==2.4.6
+ + gitdb==4.0.12
+ + gitpython==3.1.44
+ + idna[2025-04-06 20:43:25.323940] ==3.10
+ + jinja2==3.1.6
+ + joblib==1.4.2
+ + jsonschema==4.23.0
+ + jsonschema-specifications==2024.10.1
+ + kiwisolver==[2025-04-06 20:43:25.324084] 1.4.8
+ + langcodes==3.5.0
+ + language-data==1.3.0
+ + marisa-trie==1.2.1
+ + markdown-it-py==3.0.0
+ + markupsafe==3.0.2
+ + matplotlib==3.10.1
+ + mdurl==0.1.2
+ + multitasking==0.0.11
+ + murmurhash==1.0.12
+ + narwhals==1.33.0
+ + nltk==3.9.1[2025-04-06 20:43:25.324363] 
+ + numpy==2.2.4
+ + packaging==24.2
+ + pandas==2.2.3
+ + peewee==3.17.9
+ + pillow==11.1.0[2025-04-06 20:43:25.324597] 
+ + platformdirs==4.3.7
+ + plotly==6.0.1
+ + preshed==3.0.9
+ + protobuf==5.29.4
+ + pyarrow[2025-04-06 20:43:25.324819] ==19.0.1
+ + pydantic==2.11.2
+ + pydantic-core==2.33.1
+ + pydeck==0.9.1
+ + pygments==2.19.1
+ + pyparsing==3.2.3
+ + python-dateutil==[2025-04-06 20:43:25.325055] 2.9.0.post0
+ + pytz==2025.2
+ + referencing==0.36.2
+ + regex==2024.11.6
+ + requests==2.32.3
+ + rich==14.0.0
+ + rpds-py==0.24.0[2025-04-06 20:43:25.325292] 
+ + scikit-learn==1.6.1
+ + scipy==1.15.2
+ + setuptools==78.1.0
+ + shellingham==1.5.4
+ + six==1.17.0
+ + smart-open==7.1.0[2025-04-06 20:43:25.325485] 
+ + smmap==5.0.2
+ + soupsieve==2.6
+ + spacy==3.8.5
+ + spacy-legacy==[2025-04-06 20:43:25.325695] 3.0.12
+ + spacy-loggers==1.0.5
+ + srsly==2.5.1
+ + streamlit==1.44.1
+ + tenacity[2025-04-06 20:43:25.325878] ==9.1.2
+ + thinc==8.3.6
+ + threadpoolctl==3.6.0
+ + toml==0.10.2
+ + tornado==6.4.2[2025-04-06 20:43:25.326044] 
+ + tqdm==4.67.1
+ + typer==0.15.2
+ + typing-extensions==4.13.1
+ + typing-inspection==0.4.0
+ [2025-04-06 20:43:25.326197] + tzdata==2025.2
+ + urllib3==2.3.0
+ + wasabi==1.1.3
+ + watchdog==6.0.0
+ + weasel==0.4.1
+ + wordcloud==1.9.4
+ + wrapt==1.17.2
+ + yfinance==0.2.55
+[20:43:26] 🐍 Python dependencies were installed from /mount/src/fin1/uv.lock using uv-sync.
+[20:43:26] 📦 WARN: More than one requirements file detected in the repository. Available options: uv-sync /mount/src/fin1/uv.lock, uv /mount/src/fin1/requirements.txt, poetry /mount/src/fin1/pyproject.toml. Used: uv-sync with /mount/src/fin1/uv.lock
+Check if streamlit is installed
+Streamlit is already installed
+[20:43:28] 📦 Processed dependencies!
+
+
+
+[20:43:31] ❗️ The service has encountered an error while checking the health of the Streamlit app: Get "http://localhost:8501/healthz": dial tcp 127.0.0.1:8501: connect: connection refused
