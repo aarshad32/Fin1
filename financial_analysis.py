@@ -30,14 +30,21 @@ def load_data(uploaded_file=None):
         if uploaded_file is not None:
             # Try to load the file from the uploaded file
             df = pd.read_csv(uploaded_file, thousands=',')
+            print("Successfully loaded data from uploaded file")
         else:
             # Try to load from a local file
             try:
-                # Check multiple possible locations for the file
+                # Check multiple possible locations for the file - add more paths to improve deployment compatibility
                 possible_paths = [
                     './attached_assets/Financial_data.csv',
                     './Financial_data.csv',
-                    './sample_financial_data.csv'
+                    './sample_financial_data.csv',
+                    'Financial_data.csv',
+                    'sample_financial_data.csv',
+                    '../Financial_data.csv',
+                    '../sample_financial_data.csv',
+                    '/app/Financial_data.csv', # For containerized deployments
+                    '/app/sample_financial_data.csv'
                 ]
                 
                 for path in possible_paths:
@@ -45,12 +52,13 @@ def load_data(uploaded_file=None):
                         df = pd.read_csv(path, thousands=',')
                         print(f"Successfully loaded data from {path}")
                         break
-                    except:
+                    except Exception as file_error:
+                        print(f"Failed to load from {path}: {str(file_error)}")
                         continue
                 else:  # This runs if the loop completes without breaking
                     raise FileNotFoundError("Could not find financial data file in any expected location")
             except Exception as e:
-                print(f"Error loading financial data: {str(e)}")
+                print(f"Error loading financial data from all paths: {str(e)}")
                 # Fall back to sample data
                 raise  # Re-raise to trigger the sample data creation
     except Exception as e:

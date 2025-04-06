@@ -1,10 +1,52 @@
 import re
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+import os
+import sys
 
-# Print version information
-print("NLP Processor module loaded")
+# Initialize availability flags
+NUMPY_AVAILABLE = False
+SKLEARN_AVAILABLE = False
+SPACY_AVAILABLE = False
+
+# Try to import numpy
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    print("NumPy not available. Using basic fallback methods for NLP.")
+
+# Try to import scikit-learn
+try:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    print("scikit-learn not available. Using basic fallback methods for NLP.")
+
+# Try to import and load spaCy
+try:
+    import spacy
+    
+    # Try different paths for the model
+    try:
+        # Try standard loading
+        nlp = spacy.load('en_core_web_sm')
+        SPACY_AVAILABLE = True
+        print("Successfully loaded spaCy model")
+    except OSError:
+        # Try downloading if not found
+        print("Attempting to download spaCy model...")
+        os.system(f"{sys.executable} -m spacy download en_core_web_sm")
+        try:
+            nlp = spacy.load('en_core_web_sm')
+            SPACY_AVAILABLE = True
+            print("Successfully downloaded and loaded spaCy model")
+        except Exception as e:
+            print(f"Error loading spaCy model after download: {str(e)}")
+except ImportError:
+    print("spaCy not available. Using basic fallback methods for NLP.")
+
+print("NLP Processor module loaded with available modules:") 
+print(f"NumPy: {NUMPY_AVAILABLE}, scikit-learn: {SKLEARN_AVAILABLE}, spaCy: {SPACY_AVAILABLE}")
 
 # Financial domain terms to recognize in queries
 FINANCIAL_TERMS = {
@@ -147,45 +189,94 @@ def identify_query_type(query, company):
     # Preprocess the query
     preprocessed_query = preprocess_text(query)
     
-    # Prepare the query templates with the company name
-    formatted_templates = {}
-    for query_type, templates in QUERY_TEMPLATES.items():
-        formatted_templates[query_type] = [preprocess_text(template.format(company=company)) for template in templates]
-    
-    # Calculate similarity scores between the query and templates
-    best_match = None
-    highest_score = -1
-    
-    for query_type, templates in formatted_templates.items():
-        # Create a TF-IDF vectorizer
-        vectorizer = TfidfVectorizer()
-        
-        # Combine the preprocessed query with the templates for this query type
-        all_texts = [preprocessed_query] + templates
-        
-        try:
-            # Transform the texts to TF-IDF vectors
-            tfidf_matrix = vectorizer.fit_transform(all_texts)
-            
-            # Calculate cosine similarity between the query and each template
-            for i in range(1, len(all_texts)):
-                similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[i:i+1])[0][0]
-                if similarity > highest_score:
-                    highest_score = similarity
-                    best_match = query_type
-        except:
-            # Handle case where vectorizer fails (e.g., empty texts)
-            continue
-    
-    # Extract financial terms as a backup
+    # Extract financial terms from the query
     financial_terms = extract_financial_terms(query)
     
-    if best_match is None and financial_terms:
-        # If no template match but we found financial terms, use the first category
-        best_match = next(iter(financial_terms))
+    # Default best match based on financial terms (fallback method)
+    term_based_match = None
+    if financial_terms:
+        # Use the first category found as a fallback
+        term_based_match = next(iter(financial_terms))
     
-    # Determine confidence based on score
-    confidence = highest_score if highest_score > 0 else 0.3  # Default confidence if no match
+    # If sklearn is not available, just use the term-based match
+    if not SKLEARN_AVAILABLE:
+        print("Using basic term matching for query identification")
+        best_match = term_based_match
+        confidence = 0.5 if best_match else 0.3  # Default confidence
+        
+        # If no match from terms, try to find a match based on keywords
+        if best_match is None:
+            query_lower = query.lower()
+            
+            # Check for common keywords to assign a query type
+            if any(word in query_lower for word in ['revenue', 'sales', 'earn']):
+                best_match = 'revenue_query'
+            elif any(word in query_lower for word in ['profit', 'income', 'earnings']):
+                best_match = 'net_income_query'
+            elif any(word in query_lower for word in ['asset', 'debt', 'liability']):
+                best_match = 'assets_liabilities_query'
+            elif any(word in query_lower for word in ['cash', 'flow', 'liquidity']):
+                best_match = 'cash_flow_query'
+            elif any(word in query_lower for word in ['growth', 'growing', 'increase']):
+                best_match = 'growth_query'
+            elif any(word in query_lower for word in ['performance', 'overview', 'summary']):
+                best_match = 'performance_query'
+            elif any(word in query_lower for word in ['compare', 'comparison', 'versus', 'vs']):
+                best_match = 'comparison_query'
+            elif any(word in query_lower for word in ['trend', 'pattern', 'historical']):
+                best_match = 'trend_query'
+            elif any(word in query_lower for word in ['forecast', 'future', 'predict', 'projection']):
+                best_match = 'forecast_query'
+            else:
+                # If still no match, default to performance query
+                best_match = 'performance_query'
+                confidence = 0.2
+    else:
+        # Use TF-IDF and cosine similarity for more accurate matching if sklearn is available
+        # Prepare the query templates with the company name
+        formatted_templates = {}
+        for query_type, templates in QUERY_TEMPLATES.items():
+            formatted_templates[query_type] = [preprocess_text(template.format(company=company)) for template in templates]
+        
+        # Calculate similarity scores between the query and templates
+        best_match = None
+        highest_score = -1
+        
+        for query_type, templates in formatted_templates.items():
+            try:
+                # Create a TF-IDF vectorizer (already checked SKLEARN_AVAILABLE)
+                from sklearn.feature_extraction.text import TfidfVectorizer
+                from sklearn.metrics.pairwise import cosine_similarity
+                
+                vectorizer = TfidfVectorizer()
+                
+                # Combine the preprocessed query with the templates for this query type
+                all_texts = [preprocessed_query] + templates
+                
+                # Transform the texts to TF-IDF vectors
+                tfidf_matrix = vectorizer.fit_transform(all_texts)
+                
+                # Calculate cosine similarity between the query and each template
+                for i in range(1, len(all_texts)):
+                    similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[i:i+1])[0][0]
+                    if similarity > highest_score:
+                        highest_score = similarity
+                        best_match = query_type
+            except Exception as e:
+                print(f"Error in TF-IDF processing for {query_type}: {str(e)}")
+                continue
+        
+        # If TF-IDF method failed, fall back to term-based match
+        if best_match is None:
+            best_match = term_based_match
+            
+        # Determine confidence based on score
+        confidence = highest_score if highest_score > 0 else 0.3
+    
+    # If we still have no match, default to performance query
+    if best_match is None:
+        best_match = 'performance_query'
+        confidence = 0.2
     
     return {
         'query_type': best_match,

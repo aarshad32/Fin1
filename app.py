@@ -46,16 +46,36 @@ def add_logo():
         """,
         unsafe_allow_html=True
     )
-    with open("assets/financial_icon.svg", "r") as f:
-        svg = f.read()
-        b64 = base64.b64encode(svg.encode("utf-8")).decode("utf-8")
-        html = f'<img src="data:image/svg+xml;base64,{b64}" class="logo-img">'
-        st.sidebar.markdown(html, unsafe_allow_html=True)
+    
+    # Try multiple possible locations for the logo file
+    possible_paths = [
+        "assets/financial_icon.svg", 
+        "./assets/financial_icon.svg",
+        "../assets/financial_icon.svg",
+        "financial_icon.svg",
+        "./financial_icon.svg"
+    ]
+    
+    for path in possible_paths:
+        try:
+            with open(path, "r") as f:
+                svg = f.read()
+                b64 = base64.b64encode(svg.encode("utf-8")).decode("utf-8")
+                html = f'<img src="data:image/svg+xml;base64,{b64}" class="logo-img">'
+                st.sidebar.markdown(html, unsafe_allow_html=True)
+                print(f"Successfully loaded logo from {path}")
+                return
+        except:
+            continue
+    
+    # If we get here, no logo was found - use text instead
+    st.sidebar.markdown("## 💹 Financial Analysis")
 
 try:
     add_logo()
-except:
-    pass  # Continue if logo file not found
+except Exception as e:
+    print(f"Error adding logo: {str(e)}")
+    st.sidebar.markdown("## 💹 Financial Analysis")
 
 # Initialize session state
 if 'df' not in st.session_state:
