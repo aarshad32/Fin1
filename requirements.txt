@@ -1,0 +1,12 @@
+matplotlib==3.10.1
+nltk==3.9.1
+numpy==2.2.4
+pandas==2.2.3
+plotly==6.0.1
+scikit-learn==1.6.1
+streamlit==1.44.1
+wordcloud==1.9.4
+yfinance==0.2.39
+starlette==0.36.3
+uvicorn==0.29.0
+spacy==3.8.5
